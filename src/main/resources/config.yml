@@ -1,0 +1,33 @@
+# interval in ticks
+# only used to check if timer ran out
+# and to save
+check-interval: 100
+
+# if you get to the block, should it instantly give you the next one (true)
+# or wait until the timer is done (false)
+instant-new-block: true
+
+# interval in minutes
+# time to get the block
+block-duration: 30
+
+# recommended
+only-collidables: true
+
+# blocked blocks
+blocked-blocks:
+  - air
+  - barrier
+  - structure_void
+  - structure_block
+  - command_block
+  - repeating_command_block
+  - chain_command_block
+  - jigsaw
+  - light
+
+# duration theplayer is banned, -1 for permanent, duration in hours, fractions are possible
+ban-duration: 1
+
+# kill the player instead of banning him
+kill: false

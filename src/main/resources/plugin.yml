@@ -1,0 +1,9 @@
+name: BanShuffle
+version: '${project.version}'
+main: me.unleqitq.banshuffle.BanShuffle
+api-version: 1.18
+authors: [ UnleqitQ ]
+permissions:
+  banshuffle.exempt:
+    description: "Excluded from BanShuffle"
+    default: false
