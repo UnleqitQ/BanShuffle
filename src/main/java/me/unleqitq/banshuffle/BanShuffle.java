@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,6 +34,8 @@ public final class BanShuffle extends JavaPlugin {
 	public static Map<UUID, Material> targetMaterials = new HashMap<>();
 	public static Set<UUID> achievedBlock = new HashSet<>();
 	
+	public static BanShuffleCommand banShuffleCommand;
+	
 	@Override
 	public void onEnable() {
 		instance = this;
@@ -53,6 +56,14 @@ public final class BanShuffle extends JavaPlugin {
 		standListener = new StandListener();
 		Bukkit.getPluginManager().registerEvents(joinListener, this);
 		Bukkit.getPluginManager().registerEvents(standListener, this);
+		banShuffleCommand = new BanShuffleCommand();
+		PluginCommand pluginCommand = getCommand("banshuffle");
+		if (pluginCommand==null) {
+			Bukkit.getLogger().severe("Error registering command");
+			return;
+		}
+		pluginCommand.setTabCompleter(banShuffleCommand);
+		pluginCommand.setExecutor(banShuffleCommand);
 	}
 	
 	@Override

@@ -4,7 +4,14 @@ main: me.unleqitq.banshuffle.BanShuffle
 api-version: 1.17
 authors: [ UnleqitQ ]
 
+commands:
+  banshuffle:
+    permission: "banshuffle.admin"
+
 permissions:
   banshuffle.exempt:
     description: "Excluded from BanShuffle"
     default: false
+  banshuffle.admin:
+    description: "Use command"
+    default: op
