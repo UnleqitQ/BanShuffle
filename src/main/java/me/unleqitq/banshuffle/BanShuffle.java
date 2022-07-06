@@ -24,10 +24,12 @@ public final class BanShuffle extends JavaPlugin {
 	
 	public static Random rnd = new Random();
 	public static CheckTask checkTask;
+	public static BarTask barTask;
 	public static JoinListener joinListener;
 	public static StandListener standListener;
 	
 	public static Map<UUID, Integer> startTimes = new HashMap<>();
+	public static Map<UUID, Integer> fails = new HashMap<>();
 	public static Map<UUID, Material> targetMaterials = new HashMap<>();
 	public static Set<UUID> achievedBlock = new HashSet<>();
 	
@@ -45,6 +47,8 @@ public final class BanShuffle extends JavaPlugin {
 		loadMaterials();
 		checkTask = new CheckTask();
 		checkTask.runTaskTimerAsynchronously(this, 20L, getConfig().getInt("check-interval", 20));
+		barTask = new BarTask();
+		barTask.runTaskTimerAsynchronously(this, 20L, 10);
 		joinListener = new JoinListener();
 		standListener = new StandListener();
 		Bukkit.getPluginManager().registerEvents(joinListener, this);
@@ -73,8 +77,10 @@ public final class BanShuffle extends JavaPlugin {
 				int start = buffer.readInt();
 				String targetS = readUTF(buffer);
 				Material target = Material.getMaterial(targetS);
+				int fail = buffer.readInt();
 				startTimes.put(uuid, start);
 				targetMaterials.put(uuid, target);
+				fails.put(uuid, fail);
 			}
 		}
 		{
@@ -94,14 +100,14 @@ public final class BanShuffle extends JavaPlugin {
 		ByteBuf buffer = Unpooled.buffer();
 		Map<UUID, Integer> _startTimes = new HashMap<>(startTimes);
 		Map<UUID, Material> _targetMaterials = new HashMap<>(targetMaterials);
+		Map<UUID, Integer> _fails = new HashMap<>(fails);
 		Set<UUID> _achievedBlock = new HashSet<>(achievedBlock);
-		if (_startTimes.size() != _targetMaterials.size())
-			return;
 		buffer.writeInt(_startTimes.size());
 		for (UUID uuid : _startTimes.keySet()) {
 			writeUUID(buffer, uuid);
 			buffer.writeInt(_startTimes.get(uuid));
 			writeUTF(buffer, _targetMaterials.get(uuid).name());
+			buffer.writeInt(_fails.getOrDefault(uuid, 0));
 		}
 		buffer.writeInt(_achievedBlock.size());
 		for (UUID uuid : achievedBlock) {

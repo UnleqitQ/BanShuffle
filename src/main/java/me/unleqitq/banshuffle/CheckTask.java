@@ -26,21 +26,7 @@ public class CheckTask extends BukkitRunnable {
 						BanShuffle.applyNewBlock(player);
 						continue;
 					}
-					Bukkit.broadcast(player.displayName().append(Component.text(
-							"§cDidn't find " + BanShuffle.targetMaterials.get(player.getUniqueId()).getKey().getKey() +
-									" §cin time")));
-					if (BanShuffle.config().getBoolean("kill", false)) {
-						player.damage(Math.abs(player.getHealth()) * 100);
-						player.damage(1000000);
-					}
-					else if (BanShuffle.config().getDouble("ban-duration", 1) < 0)
-						player.banPlayer("§cYou weren't fast enough to find " +
-								BanShuffle.targetMaterials.get(player.getUniqueId()).getKey().getKey());
-					else
-						player.banPlayer("§cYou weren't fast enough to find " +
-								BanShuffle.targetMaterials.get(player.getUniqueId()).getKey().getKey(), Date.from(
-								Instant.now().plus((long) (BanShuffle.config().getDouble("ban-duration", 1) * 60),
-										ChronoUnit.MINUTES)));
+					fail(player);
 					BanShuffle.applyNewBlock(player);
 				}
 			}
@@ -60,22 +46,7 @@ public class CheckTask extends BukkitRunnable {
 							BanShuffle.applyNewBlock(player);
 							continue;
 						}
-						Bukkit.broadcast(player.displayName().append(Component.text(" §cdidn't find "))
-								.append(Component.translatable(
-										BanShuffle.targetMaterials.get(player.getUniqueId()).translationKey()))
-								.append(Component.text(" §cin time")));
-						if (BanShuffle.config().getBoolean("kill", false)) {
-							player.damage(Math.abs(player.getHealth()) * 100);
-							player.damage(1000000);
-						}
-						else if (BanShuffle.config().getDouble("ban-duration", 1) < 0)
-							player.banPlayer("§cYou weren't fast enough to find " +
-									BanShuffle.targetMaterials.get(player.getUniqueId()).getKey().getKey());
-						else
-							player.banPlayer("§cYou weren't fast enough to find " +
-									BanShuffle.targetMaterials.get(player.getUniqueId()).getKey().getKey(), Date.from(
-									Instant.now().plus((long) (BanShuffle.config().getDouble("ban-duration", 1) * 60),
-											ChronoUnit.MINUTES)));
+						fail(player);
 						BanShuffle.applyNewBlock(player);
 					}
 				}
@@ -86,6 +57,31 @@ public class CheckTask extends BukkitRunnable {
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);
+		}
+	}
+	
+	public static void fail(Player player) {
+		BanShuffle.fails.put(player.getUniqueId(), BanShuffle.fails.getOrDefault(player.getUniqueId(), 0) + 1);
+		Bukkit.broadcast(player.displayName().append(Component.text(" §cdidn't find "))
+				.append(Component.translatable(BanShuffle.targetMaterials.get(player.getUniqueId()).translationKey()))
+				.append(Component.text(" §cin time")));
+		int left = BanShuffle.config().getInt("lives", 3) - BanShuffle.fails.get(player.getUniqueId());
+		if (left <= 0) {
+			if (BanShuffle.config().getBoolean("kill", false)) {
+				player.damage(Math.abs(player.getHealth()) * 100);
+				player.damage(1000000);
+			}
+			else if (BanShuffle.config().getDouble("ban-duration", 1) < 0)
+				player.banPlayer("§cYou weren't fast enough to find " +
+						BanShuffle.targetMaterials.get(player.getUniqueId()).getKey().getKey());
+			else
+				player.banPlayer("§cYou weren't fast enough to find " +
+						BanShuffle.targetMaterials.get(player.getUniqueId()).getKey().getKey(), Date.from(Instant.now()
+						.plus((long) (BanShuffle.config().getDouble("ban-duration", 1) * 60), ChronoUnit.MINUTES)));
+			BanShuffle.fails.put(player.getUniqueId(), 0);
+		}
+		else {
+			player.sendMessage(Component.text("§aYou have §6" + left + "§a lives left!"));
 		}
 	}
 	

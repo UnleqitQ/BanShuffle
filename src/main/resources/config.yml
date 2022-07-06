@@ -26,7 +26,13 @@ blocked-blocks:
   - jigsaw
   - light
 
-# duration theplayer is banned, -1 for permanent, duration in hours, fractions are possible
+# amount of times you can fail before getting banned
+lives: 3
+
+# shows the block, the time that is left and the lives you have left
+action-bar: false
+
+# duration the player is banned, -1 for permanent, duration in hours, fractions are possible
 ban-duration: 1
 
 # kill the player instead of banning him
