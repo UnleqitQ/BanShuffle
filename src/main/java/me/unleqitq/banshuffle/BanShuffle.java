@@ -144,7 +144,8 @@ public final class BanShuffle extends JavaPlugin {
 	
 	public static void loadMaterials() {
 		materials = new ArrayList<>();
-		Stream<Material> stream = Arrays.stream(Material.values()).filter(Material::isBlock).filter(m -> !m.isAir());
+		Stream<Material> stream = Arrays.stream(Material.values()).filter(Material::isBlock).filter(m -> !m.isAir())
+				.filter(m -> !m.isLegacy());
 		if (config().getBoolean("only-collidables", true))
 			stream = stream.filter(Material::isCollidable);
 		List<String> blocked = config().getStringList("blocked-blocks");
