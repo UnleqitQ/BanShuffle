@@ -155,7 +155,7 @@ public final class BanShuffle extends JavaPlugin {
 		if (config().getBoolean("only-collidables", true))
 			stream = stream.filter(Material::isCollidable);
 		List<String> blocked = config().getStringList("blocked-blocks");
-		stream.filter(m -> blocked.stream().noneMatch(b -> m.getKey().getKey().equalsIgnoreCase(b)));
+		stream = stream.filter(m -> blocked.stream().noneMatch(b -> m.getKey().getKey().equalsIgnoreCase(b)));
 		materials.addAll(stream.toList());
 	}
 	

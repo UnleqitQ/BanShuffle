@@ -13,7 +13,7 @@ public class StandListener implements Listener {
 		if (!BanShuffle.startTimes.containsKey(event.getPlayer().getUniqueId()))
 			return;
 		if (event.hasChangedBlock()) {
-			Material type = event.getTo().add(0, -1, 0).getBlock().getType();
+			Material type = event.getTo().clone().add(0, -1, 0).getBlock().getType();
 			if (BanShuffle.targetMaterials.get(event.getPlayer().getUniqueId()).equals(type)) {
 				if (BanShuffle.config().getBoolean("instant-new-block", true)) {
 					BanShuffle.applyNewBlock(event.getPlayer());

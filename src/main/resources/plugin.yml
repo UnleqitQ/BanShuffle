@@ -1,7 +1,7 @@
 name: BanShuffle
 version: '${project.version}'
 main: me.unleqitq.banshuffle.BanShuffle
-api-version: 1.18
+api-version: 1.17
 authors: [ UnleqitQ ]
 
 permissions:
